@@ -10,6 +10,7 @@ py-vollib = "*"
 python-dotenv = "*"
 scipy = "*"
 matplotlib = "*"
+seaborn = "*"
 
 [dev-packages]
 black = "*"
