@@ -33,8 +33,8 @@ class OptionSimulator:
 
     def __init__(
         self,
-        chain_timeline: OptionChainTimeline,
-        strategies: List[BaseOptionStrategy],
+        chain_timeline: "OptionChainTimeline",
+        strategies: List["BaseOptionStrategy"],
         timing_signal: Optional[pd.Series] = None,
     ):
         assert len(strategies) > 0
