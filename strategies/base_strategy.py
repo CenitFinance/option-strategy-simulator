@@ -27,14 +27,15 @@ class BaseOptionStrategy:
     def reset(self):
         pass
 
-    @staticmethod
-    def _get_last_strategy_action_time(
-        action_log: List[SimulationAction],
-    ) -> Optional[pd.Timestamp]:
-        for action in reversed(action_log):
-            if action.type in ("buy", "sell"):
-                return action.timestamp
-        return None
+    # EG note: duplicated method - maybe remove?
+    # @staticmethod
+    # def _get_last_strategy_action_time(
+    #     action_log: List[SimulationAction],
+    # ) -> Optional[pd.Timestamp]:
+    #     for action in reversed(action_log):
+    #         if action.type in ("buy", "sell"):
+    #             return action.timestamp
+    #     return None
 
     @staticmethod
     def _get_last_strategy_action_time(

@@ -4,12 +4,14 @@ import numpy as np
 
 
 def price_to_returns(price_data: pd.Series) -> pd.Series:
+    """Calculates returns from a set of prices."""
     returns = price_data.pct_change()
     returns = returns.replace([np.inf, -np.inf], float("NaN")).fillna(0)
     return returns
 
 
 def annual_return_to_period(annual_return: float, periods: int) -> float:
+    """Convert an annual return to a period return."""
     return (1 + annual_return) ** (1 / periods) - 1 if annual_return > 0 else 0.0
 
 

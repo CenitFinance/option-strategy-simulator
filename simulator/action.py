@@ -7,6 +7,7 @@ from simulator.position import OptionPosition
 
 @dataclass
 class SimulationAction:
+    """Data class holding the information of an action to be taken in the backtest."""
     step: int
     timestamp: pd.Timestamp
     spot: float

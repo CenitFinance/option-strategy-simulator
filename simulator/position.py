@@ -9,6 +9,7 @@ from simulator.chain import OptionChain
 
 @dataclass
 class OptionPosition:
+    """Holds details of an options position"""
     type: Literal["call", "put"]
     strike: float
     maturity: pd.Timestamp
@@ -19,23 +20,29 @@ class OptionPosition:
     price_start: Optional[float] = None
 
     def is_long(self) -> bool:
+        """Returns True if the position is long"""
         return self.size > 0
 
     def is_short(self) -> bool:
+        """Returns True if the position is short"""
         return self.size < 0
 
     def is_call(self) -> bool:
+        """Returns True if the position is a call"""
         return self.type == "call"
 
     def moneyness(self, spot: float) -> float:
+        """Returns the moneyness of the position"""
         return (spot - self.strike) if self.is_call() else (self.strike - spot)
 
     def moneyness_ratio(self, spot: float) -> float:
+        """Returns the ratio of the moneyness to the underlying price"""
         return self.moneyness(spot) / self.strike
 
     def valuation(
         self, spot: float, time: pd.Timestamp, chain: Optional[OptionChain] = None
     ) -> float:
+        """Returns the valuation of the position"""
         time_left = self.maturity - time
         if time_left <= pd.Timedelta("1h"):
             return self.delivery(spot)
@@ -72,6 +79,7 @@ class OptionPosition:
     def delta(
         self, spot: float, time: pd.Timestamp, chain: Optional[OptionChain] = None
     ) -> float:
+        """Returns the delta of the position"""
         time_left = self.maturity - time
         if time_left <= pd.Timedelta("1h"):
             has_delivery = self.delivery(spot) != 0
@@ -120,14 +128,18 @@ class OptionPosition:
                 )
 
     def collateral_value(self, spot: float) -> float:
+        """Returns the collateral value of the position"""
         return self.collateral_primary + self.collateral_secondary * spot
 
     def delivery(self, spot: float) -> float:
+        """Returns the delivery of the position"""
         moneyness = self.moneyness(spot)
         return max(0, moneyness) * self.size
 
     def is_liquidated(self, spot: float) -> bool:
+        """Returns True if the position is liquidated"""
         return (self.collateral_value(spot) < -self.delivery(spot)) and self.is_short()
 
     def is_expired(self, time: pd.Timestamp) -> bool:
+        """Returns True if the position is expired"""
         return time >= self.maturity
