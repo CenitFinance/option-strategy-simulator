@@ -1,7 +1,7 @@
 import warnings
 from datetime import datetime
 from math import sqrt
-from typing import Callable, Iterable, List, Literal, Optional, Tuple
+from typing import Callable, Iterable, Literal, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ warnings.filterwarnings("ignore")
 
 
 class OptionChain:
+    """Class representing the option chain of a single underlying asset."""
     def __init__(
         self,
         chain: pd.DataFrame,
@@ -99,8 +100,8 @@ class OptionChain:
                     iv = imp_vol_bsm(p, self.spot, k, tau, 0.0, option_type) * r
                     ivs_lo.append(iv)
                     strikes_lo.append(k)
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
 
             strikes_hi = []
             ivs_hi = []
@@ -112,8 +113,8 @@ class OptionChain:
                     iv = imp_vol_bsm(p, self.spot, k, tau, 0.0, option_type) * r
                     ivs_hi.append(iv)
                     strikes_hi.append(k)
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
 
             return lambda strike: (
                 self._interpolate_term_structure(
@@ -177,7 +178,7 @@ class OptionChain:
         option_type: Literal["call", "put"] = "call",
         side: Literal["bid", "mark", "ask"] = "ask",
     ) -> Tuple[float, float, float]:
-
+        """Get the price of an option by strike and days to maturity"""
         exp = int(days_to_maturity * 24 * 60 * 60)
         tau = exp / 60 / 60 / 24 / 365.25
         price_chain = self._get_price_chain(option_type, side)
@@ -194,7 +195,7 @@ class OptionChain:
         option_type: Literal["call", "put"] = "call",
         side: Literal["bid", "mark", "ask"] = "ask",
     ) -> Tuple[float, float, float]:
-
+        """Get the price of an option by moneyness and days to maturity"""
         exp = int(days_to_maturity * 24 * 60 * 60)
         tau = exp / 60 / 60 / 24 / 365.25
         price_chain = self._get_price_chain(option_type, side)
@@ -216,7 +217,7 @@ class OptionChain:
         option_type: Literal["call", "put"] = "call",
         side: Literal["bid", "mark", "ask"] = "ask",
     ) -> Tuple[float, float, float]:
-
+        """Get the price of an option by delta and days to maturity"""
         exp = int(days_to_maturity * 24 * 60 * 60)
         tau = exp / 60 / 60 / 24 / 365.25
         price_chain = self._get_price_chain(option_type, side)
@@ -257,6 +258,7 @@ class OptionChain:
 
 
 class OptionChainTimeline:
+    """Timeline of option chain data"""
     def __init__(
         self,
         chain: pd.DataFrame,

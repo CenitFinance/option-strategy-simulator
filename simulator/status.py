@@ -8,32 +8,41 @@ from simulator.position import OptionPosition
 
 @dataclass
 class SimulationStatus:
+    """Holds the current status of a backtest simulation"""
     primary: float
     secondary: float
     positions: List[OptionPosition]
 
     def liquidity(self, spot: float) -> float:
+        """Returns the liquidity of the account"""
         return self.primary + self.secondary * spot
 
     def num_long_positions(self) -> int:
+        """Returns the number of long positions"""
         return sum(1 for p in self.positions if p.is_long())
 
     def num_short_positions(self) -> int:
+        """Returns the number of short positions"""
         return sum(1 for p in self.positions if p.is_short())
 
     def size_long_positions(self) -> int:
+        """Returns the size of long positions"""
         return abs(sum(p.size for p in self.positions if p.is_long()))
 
     def size_short_positions(self) -> int:
+        """Returns the size of short positions"""
         return abs(sum(p.size for p in self.positions if p.is_short()))
 
     def collateral_primary(self) -> float:
+        """Returns the collateral value of the account"""
         return sum(p.collateral_primary for p in self.positions)
 
     def collateral_secondary(self) -> float:
+        """Returns the collateral value of the account"""
         return sum(p.collateral_secondary for p in self.positions)
 
     def total_value(self, spot: float, time: pd.Timestamp) -> float:
+        """Returns the total value of the account"""
         liquidity = self.liquidity(spot)
         positions_value = sum(p.valuation(spot, time) for p in self.positions)
         collaterals = sum(p.collateral_value(spot) for p in self.positions)
@@ -42,9 +51,11 @@ class SimulationStatus:
     def positions_delta(
         self, spot: float, time: pd.Timestamp, chain: OptionChain
     ) -> float:
+        """Returns the total delta of the positions"""
         return sum(p.delta(spot, time, chain) for p in self.positions)
 
     def total_delta(self, spot: float, time: pd.Timestamp, chain: OptionChain) -> float:
+        """Returns the total delta of the account"""
         liquidity_delta = self.secondary
         positions_delta = self.positions_delta(spot, time, chain)
         collateral_delta = self.collateral_secondary()

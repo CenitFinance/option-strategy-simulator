@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 
 class OptionSimulator:
+    """Simulates the performance of an option strategy"""
     TIMELINE_COLUMNS = [
         "timestamp",
         "spot",
@@ -188,7 +189,7 @@ class OptionSimulator:
         time_step: Union[pd.Timedelta, str] = pd.Timedelta("1h"),
         verbose: bool = False,
     ) -> SimulationResult:
-
+        """Simulate the strategy over the timeline and return a SimulationResult object."""
         self._reset_strategies()
         start = pd.Timestamp(start)
         end = pd.Timestamp(end)

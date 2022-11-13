@@ -17,6 +17,7 @@ import matplotlib as mpl
 
 
 class SimulationResult:
+    """Holds the results of a backtest"""
     def __init__(self, timeline: pd.DataFrame, actions: List[SimulationAction]):
         self.timeline = timeline
         self.actions = actions
@@ -85,6 +86,7 @@ class SimulationResult:
         return action_log_table
 
     def plot_simulation(self, title: str, save_location: str = None, figsize=(20, 24)):
+        """Plots the backtest results"""
         timeline = self.timeline.copy()
 
         # Select time series
